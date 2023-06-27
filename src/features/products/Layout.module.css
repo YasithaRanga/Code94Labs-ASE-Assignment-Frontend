@@ -1,4 +1,41 @@
 .row {
     max-width: 1274px;
     margin: auto;
+    margin-top: 33px;
+}
+
+.user_image {
+    width: 58px;
+    height: 58px;
+    background-color: var(--custom-blue);
+    border-radius: 58px;
+    position: relative;
+}
+
+.user_active {
+    width: 12px;
+    height: 12px;
+    background-color: #3DF265;
+    border-radius: 12px;
+    display: block;
+    position: absolute;
+    right: 3px;
+    bottom: 3px;
+}
+
+.user {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.page_title {
+    display: flex;
+    align-items: center;
+}
+
+.page_title h1 {
+    font-weight: 900;
+    letter-spacing: 5.4px;
+    font-size: 36px;
 }

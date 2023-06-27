@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useAppSelector, useAppDispatch } from "../../../app/hooks"
 import styles from "./AddProduct.module.css"
+import layoutStyles from "../Layout.module.css"
 
 export function AddProduct() {
   const dispatch = useAppDispatch()
@@ -9,7 +10,7 @@ export function AddProduct() {
   return (
     <div>
       <div className={styles.container}>
-        <div className={styles.page_title}>
+        <div className={layoutStyles.page_title}>
           <h1>PRODUCTS</h1>
           <img src="/assets/arrow.svg" />
           <h2>Add new product</h2>
