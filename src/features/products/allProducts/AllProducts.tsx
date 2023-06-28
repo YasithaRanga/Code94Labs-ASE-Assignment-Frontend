@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useAppSelector, useAppDispatch } from "../../../app/hooks"
 import styles from "./AllProducts.module.css"
 import layoutStyles from "../Layout.module.css"
@@ -13,60 +13,145 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material"
-
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-) {
-  return { name, calories, fat, carbs, protein }
-}
+import DeleteProduct from "../deleteProduct/deleteProduct"
+import React from "react"
+import { Link } from "react-router-dom"
+import { getAllProducts, toggleFavouriteProduct } from "../productSlice"
 
 export default function AllProduct() {
   const dispatch = useAppDispatch()
+  const [open, setOpen] = React.useState(false)
+  const [deleteSKU, setDeleteSKU] = React.useState()
+  const handleOpen = (sku) => {
+    setOpen(true)
+    setDeleteSKU(sku)
+  }
+  const handleClose = () => setOpen(false)
 
-  const rows = [
-    createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-    createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-    createData("Eclair", 262, 16.0, 24, 6.0),
-    createData("Cupcake", 305, 3.7, 67, 4.3),
-    createData("Gingerbread", 356, 16.0, 49, 3.9),
-  ]
+  const { products } = useAppSelector((state) => state.product)
+
+  const toggleFavourite = async (sku) => {
+    await dispatch(toggleFavouriteProduct(sku))
+    await dispatch(getAllProducts())
+  }
+
+  useEffect(() => {
+    dispatch(getAllProducts())
+  }, [dispatch, toggleFavourite])
 
   return (
     <div>
       <div className={styles.container}>
+        <DeleteProduct open={open} handleClose={handleClose} sku={deleteSKU} />
         <div className={layoutStyles.page_title}>
           <h1>PRODUCTS</h1>
         </div>
         <ProductSearchNav />
-        <Box>
-          <TableContainer component={Paper}>
+        <Box sx={{ mt: "58px" }}>
+          <TableContainer
+            sx={{
+              maxWidth: "1198px",
+              mx: "auto",
+              boxShadow: "none",
+              backgroundColor: "transparent",
+            }}
+            component={Paper}
+          >
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
+              <TableHead
+                sx={{
+                  ".MuiTableCell-root": {
+                    fontFamily: "Satoshi",
+                    fontSize: "19px",
+                    fontWeight: 700,
+                    color: "var(--custom-blue)",
+                    pt: 0,
+                    borderBottom: "none",
+                  },
+                }}
+              >
                 <TableRow>
-                  <TableCell align="left">SKU</TableCell>
-                  <TableCell align="left">IMAGE</TableCell>
-                  <TableCell align="left">PRODUCT NAME</TableCell>
-                  <TableCell align="left">PRICE</TableCell>
-                  <TableCell align="left"></TableCell>
+                  <TableCell sx={{ width: "10%" }} align="left">
+                    SKU
+                  </TableCell>
+                  <TableCell sx={{ width: "15%" }} align="center">
+                    IMAGE
+                  </TableCell>
+                  <TableCell sx={{ width: "30%" }} align="left">
+                    PRODUCT NAME
+                  </TableCell>
+                  <TableCell sx={{ width: "20%" }} align="left">
+                    QUANTITY
+                  </TableCell>
+                  <TableCell sx={{ width: "20%" }} align="right"></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row) => (
+                {products.map((product) => (
                   <TableRow
-                    key={row.name}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    key={product.sku}
+                    sx={{
+                      "&:last-child td, &:last-child th": { border: 0 },
+                      ".MuiTableCell-root": {
+                        color: "var(--custom-dark)",
+                        fontSize: "19px",
+                        fontFamily: "Satoshi",
+                        fontWeight: 500,
+                      },
+                    }}
                   >
-                    <TableCell component="th" align="left" scope="row">
-                      {row.name}
+                    <TableCell
+                      component="th"
+                      align="left"
+                      scope="row"
+                      sx={{
+                        opacity: 0.5,
+                      }}
+                    >
+                      {product.sku}
                     </TableCell>
-                    <TableCell align="left">{row.calories}</TableCell>
-                    <TableCell align="left">{row.fat}</TableCell>
-                    <TableCell align="left">{row.carbs}</TableCell>
-                    <TableCell align="left">{row.protein}</TableCell>
+                    <TableCell align="center">
+                      <Box
+                        sx={{
+                          width: "66px",
+                          height: "66px",
+                          borderRadius: "6px",
+                        }}
+                        component="img"
+                        src={
+                          product.defaultImage
+                            ? "http://localhost:3000/" + product.defaultImage
+                            : "http://localhost:3000/" + product.images[0]
+                        }
+                      />
+                    </TableCell>
+                    <TableCell align="left">{product.productName}</TableCell>
+                    <TableCell align="left">{product.quantity}</TableCell>
+                    <TableCell align="right">
+                      <Box
+                        onClick={() => handleOpen(product.sku)}
+                        component="img"
+                        sx={{ mr: "14px", cursor: "pointer" }}
+                        src="/assets/delete-icon.svg"
+                      />
+                      <Link to="edit">
+                        <Box
+                          component="img"
+                          sx={{ mr: "10px", cursor: "pointer" }}
+                          src="/assets/edit-icon.svg"
+                        />
+                      </Link>
+                      <Box
+                        onClick={() => toggleFavourite(product.sku)}
+                        component="img"
+                        sx={{ cursor: "pointer" }}
+                        src={
+                          product.favourite
+                            ? "/assets/starred.svg"
+                            : "/assets/star.svg"
+                        }
+                      />
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
