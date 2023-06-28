@@ -5,12 +5,12 @@ import {
   IconButton,
   InputAdornment,
   TextField,
+  Typography,
 } from "@mui/material"
 import styles from "./productSearchNav.module.css"
 import { Link } from "react-router-dom"
 import { Search } from "@mui/icons-material"
 import { useState } from "react"
-import { AddProduct } from "../../features/products/addProduct/AddProduct"
 
 interface Option {
   label: string
@@ -56,11 +56,42 @@ export default function ProductSearchNav() {
         <div className={styles.nav}>
           <Autocomplete
             options={options}
+            sx={{
+              maxWidth: "767px",
+              width: "100%",
+              borderRadius: "50px",
+              backgroundColor: "var(--custom-light-grey)",
+              height: "64px",
+              border: "none",
+              ".MuiInputBase-root": {
+                p: "10px",
+                pr: "16px !important",
+                pl: "29px",
+                height: "64px",
+              },
+              ".MuiOutlinedInput-notchedOutline": {
+                border: "none",
+              },
+            }}
             getOptionLabel={(option) => option.label}
             renderInput={(params) => (
               <TextField
+                sx={{
+                  ".MuiInputBase-input": {
+                    fontFamily: "Satoshi",
+                    fontSize: "19px",
+                    fontWeight: 500,
+                    color: "var(--custom-dark)",
+                  },
+                  ".MuiOutlinedInput-input::-webkit-input-placeholder": {
+                    fontFamily: "Satoshi",
+                    fontSize: "19px",
+                    fontWeight: 500,
+                    color: "var(--custom-dark-grey)",
+                  },
+                }}
                 {...params}
-                placeholder="Search"
+                placeholder="Search for products"
                 value={searchQuery}
                 onChange={handleChange}
                 variant="outlined"
@@ -68,8 +99,38 @@ export default function ProductSearchNav() {
                   ...params.InputProps,
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton onClick={handleSearch}>
-                        <Search />
+                      <IconButton
+                        sx={{
+                          backgroundColor: "var(--custom-blue)",
+                          color: "var(--custom-white)",
+                          fontSize: "19px",
+                          fontWeight: 700,
+                          fontFamily: "Satoshi",
+                          width: "180px",
+                          height: "45px",
+                          borderRadius: "80px",
+                          p: 0,
+                          "&:hover": {
+                            color: "var(--custom-blue)",
+                            border: "1px solid var(--custom-blue)",
+                            ".search-icon": {
+                              backgroundColor: "var(--custom-blue)",
+                            },
+                          },
+                        }}
+                        onClick={handleSearch}
+                      >
+                        <Box
+                          className="search-icon"
+                          sx={{
+                            width: "20px",
+                            height: "20px",
+                            mr: "10px",
+                            mask: "url(/assets/akar-icons_search.svg)",
+                            backgroundColor: "var(--custom-white)",
+                          }}
+                        ></Box>
+                        Search
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -79,7 +140,7 @@ export default function ProductSearchNav() {
             onInputChange={handleInputChange}
           />
           <Box>
-            <Link to="add">
+            <Link to="/add">
               <Button
                 className={styles.new_product_btn}
                 sx={{
@@ -95,17 +156,22 @@ export default function ProductSearchNav() {
                   fontSize: "19px",
                   fontWeight: 700,
                   borderRadius: "10px",
+                  "&:hover": {
+                    color: "var(--custom-blue)",
+                    border: "1px solid var(--custom-blue)",
+                  },
                 }}
               >
                 New Product
               </Button>
             </Link>
-            <Link to="favorites">
+            <Link to="/favourites">
               <Button
                 className={styles.fav_products_btn}
                 sx={{
                   width: "72px",
                   height: "54px",
+                  marginLeft: "12px",
                   border: "1px solid var(--custom-blue)",
                   borderRadius: "10px",
                 }}
@@ -113,8 +179,8 @@ export default function ProductSearchNav() {
                 <Box
                   component="img"
                   sx={{
-                    height: 35,
-                    width: 35,
+                    height: "35px",
+                    width: "35px",
                   }}
                   src="/assets/starred.svg"
                 />

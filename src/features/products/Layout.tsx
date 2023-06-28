@@ -6,8 +6,11 @@ export default function Layout() {
     <div>
       <div className={styles.row}>
         <div className={styles.user}>
-          <p>ADMIN</p>
-          <img src="/assets/eva_arrow-down-fill.svg" />
+          <p className={styles.user_name}>ADMIN</p>
+          <img
+            className={styles.user_carrot}
+            src="/assets/eva_arrow-down-fill.svg"
+          />
           <div className={styles.user_image}>
             <span className={styles.user_active}></span>
           </div>

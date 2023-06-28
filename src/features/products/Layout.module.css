@@ -34,8 +34,42 @@
     align-items: center;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    color: var(--custom-dark);
+}
+
 .page_title h1 {
     font-weight: 900;
     letter-spacing: 5.4px;
     font-size: 36px;
+    color: var(--custom-dark);
+}
+
+.page_title h2 {
+    font-size: 24px;
+    letter-spacing: 1.92px;
+    font-weight: 700;
+    color: var(--custom-blue);
+}
+
+.page_title a {
+    text-decoration: none;
+    color: unset;
+}
+
+.user_name {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--custom-dark);
+}
+
+.user_carrot {
+    margin-left: 10px;
+    margin-right: 37px;
 }
