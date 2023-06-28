@@ -1,5 +1,7 @@
 import {
   Autocomplete,
+  Box,
+  Button,
   IconButton,
   InputAdornment,
   TextField,
@@ -8,6 +10,7 @@ import styles from "./productSearchNav.module.css"
 import { Link } from "react-router-dom"
 import { Search } from "@mui/icons-material"
 import { useState } from "react"
+import { AddProduct } from "../../features/products/addProduct/AddProduct"
 
 interface Option {
   label: string
@@ -75,6 +78,49 @@ export default function ProductSearchNav() {
             )}
             onInputChange={handleInputChange}
           />
+          <Box>
+            <Link to="add">
+              <Button
+                className={styles.new_product_btn}
+                sx={{
+                  backgroundColor: "var(--custom-blue)",
+                  fontFamily: "Satoshi",
+                  color: "var(--custom-light-grey)",
+                  boxShadow: "4px 4px 30px 0px rgba(93, 169, 185, 0.20)",
+                  width: "249px",
+                  height: "56px",
+                  textTransform: "none",
+                  px: "45px",
+                  py: "15px",
+                  fontSize: "19px",
+                  fontWeight: 700,
+                  borderRadius: "10px",
+                }}
+              >
+                New Product
+              </Button>
+            </Link>
+            <Link to="favorites">
+              <Button
+                className={styles.fav_products_btn}
+                sx={{
+                  width: "72px",
+                  height: "54px",
+                  border: "1px solid var(--custom-blue)",
+                  borderRadius: "10px",
+                }}
+              >
+                <Box
+                  component="img"
+                  sx={{
+                    height: 35,
+                    width: 35,
+                  }}
+                  src="/assets/starred.svg"
+                />
+              </Button>
+            </Link>
+          </Box>
         </div>
       </div>
     </div>
