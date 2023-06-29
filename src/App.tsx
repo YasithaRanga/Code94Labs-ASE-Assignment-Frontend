@@ -6,6 +6,7 @@ import Layout from "./features/products/Layout"
 import AddProduct from "./features/products/addProduct/AddProduct"
 import AllProducts from "./features/products/allProducts/AllProducts"
 import FavouriteProducts from "./features/products/favouriteProducts/favouriteProducts"
+import UpdateProduct from "./features/products/updateProduct/UpdateProduct"
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
           <Route index element={<AllProducts />} />
           <Route path="/add" element={<AddProduct />} />
           <Route path="/favourites" element={<FavouriteProducts />} />
+          <Route path="/edit" element={<UpdateProduct />} />
         </Route>
       </Routes>
     </BrowserRouter>

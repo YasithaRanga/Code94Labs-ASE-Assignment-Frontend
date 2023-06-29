@@ -1,12 +1,26 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useAppSelector, useAppDispatch } from "../../../app/hooks"
-import styles from "./AddProduct.module.css"
+import styles from "./UpdateProduct.module.css"
 import layoutStyles from "../Layout.module.css"
-import { Link } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
 import { Box, Button, TextField, Typography } from "@mui/material"
-import { addProduct } from "../productSlice"
+import { addProduct, getAllProducts, updateProduct } from "../productSlice"
 
-export default function AddProduct() {
+export default function UpdateProduct() {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [currentProduct, setCurrentProduct] = useState({
+    sku: "",
+    productName: "",
+    quantity: 0,
+    description: "",
+    images: [],
+  })
+  const [defaultImage, setDefaultImage] = useState("")
+
+  const sku = searchParams.get("sku")
+
+  const { products } = useAppSelector((state) => state.product)
+
   const dispatch = useAppDispatch()
   const [selectedImages, setSelectedImages] = useState([])
 
@@ -18,6 +32,7 @@ export default function AddProduct() {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+
     const formData = new FormData()
 
     formData.append("sku", event.target.sku.value)
@@ -25,12 +40,26 @@ export default function AddProduct() {
     formData.append("productName", event.target.name.value)
     formData.append("description", event.target.description.value)
 
-    selectedImages.forEach((image) => {
-      formData.append("images", image)
-    })
+    if (defaultImage) {
+      formData.append("defaultImage", defaultImage)
+    }
 
-    dispatch(addProduct(formData))
+    if (selectedImages.length !== 0) {
+      selectedImages.forEach((image) => {
+        formData.append("images", image)
+      })
+    }
+
+    dispatch(updateProduct(formData))
   }
+
+  useEffect(() => {
+    products.forEach((product) => {
+      if (product.sku === sku) {
+        setCurrentProduct(product)
+      }
+    })
+  }, [])
 
   return (
     <div>
@@ -48,7 +77,7 @@ export default function AddProduct() {
               height: "37px",
             }}
           />
-          <h2>Add new product</h2>
+          <h2>Edit product</h2>
         </div>
         <Box sx={{ mt: "40px" }} component="form" onSubmit={handleSubmit}>
           <Box
@@ -70,10 +99,13 @@ export default function AddProduct() {
               SKU
             </Typography>
             <TextField
+              key={currentProduct.sku}
+              disabled
               required
               id="sku"
               name="sku"
               variant="outlined"
+              defaultValue={currentProduct.sku}
               sx={{
                 maxWidth: "400px",
                 width: "100%",
@@ -120,10 +152,12 @@ export default function AddProduct() {
                 Name
               </Typography>
               <TextField
+                key={currentProduct.productName}
                 required
                 id="name"
                 name="name"
                 variant="outlined"
+                defaultValue={currentProduct.productName}
                 sx={{
                   maxWidth: "400px",
                   width: "100%",
@@ -162,6 +196,8 @@ export default function AddProduct() {
                 QTY
               </Typography>
               <TextField
+                key={currentProduct.quantity}
+                defaultValue={currentProduct.quantity}
                 type="number"
                 required
                 id="quantity"
@@ -216,12 +252,14 @@ export default function AddProduct() {
               A small description about the product
             </Typography>
             <TextField
+              key={currentProduct.description}
               required
               multiline
               minRows={4}
               id="description"
               name="description"
               variant="outlined"
+              defaultValue={currentProduct.description}
               sx={{
                 width: "100%",
                 border: "none",
@@ -268,7 +306,54 @@ export default function AddProduct() {
                 JPEG, PNG, SVG or GIF (Maximum file size 50MB)
               </Typography>
             </Box>
-            <Box>
+            <Box sx={{ display: "flex" }}>
+              <Box
+                sx={{
+                  mr: "23px",
+                  height: "89px",
+                  display: "flex",
+                  gap: "10px",
+                }}
+              >
+                {currentProduct.images.map((image) => (
+                  <Box
+                    key={image}
+                    onClick={() => setDefaultImage(image)}
+                    sx={{
+                      position: "relative",
+                      width: "85px",
+                      height: "85px",
+                      borderRadius: "10px",
+                      ":hover::after": {
+                        content: '"Set as default"',
+                        fontSize: "14px",
+                        position: "absolute",
+                        fontFamily: "Satoshi",
+                        left: 0,
+                        bottom: "-25px",
+                        color: "var(--custom-blue)",
+                      },
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: "85px",
+                        height: "85px",
+                        borderRadius: "10px",
+                        ...(defaultImage === image && {
+                          border: "2px solid var(--custom-blue)",
+                        }),
+                        ":hover": {
+                          cursor: "pointer",
+                          border: "2px solid var(--custom-blue)",
+                        },
+                      }}
+                      component="img"
+                      src={"http://localhost:3000/" + image}
+                    />
+                  </Box>
+                ))}
+              </Box>
               <Typography
                 sx={{
                   fontSize: "19px",
@@ -280,12 +365,11 @@ export default function AddProduct() {
                 }}
                 component="label"
               >
-                Add Images
+                Edit Images
                 <input
                   type="file"
                   hidden
                   multiple
-                  required
                   accept=".jpg, .png, .jpeg, .svg, .gif"
                   onChange={handleFileChange}
                 />
@@ -315,7 +399,7 @@ export default function AddProduct() {
                 },
               }}
             >
-              Add Product
+              Save changes
             </Button>
           </Box>
         </Box>

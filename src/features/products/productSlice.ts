@@ -47,7 +47,6 @@ export const addProduct = createAsyncThunk(
           "Content-Type": "multipart/form-data",
         },
       })
-      console.log("Images uploaded successfully")
     } catch (error) {
       console.error("Error uploading images:", error)
     }
@@ -70,6 +69,47 @@ export const toggleFavouriteProduct = createAsyncThunk(
       const response = await axios.put(
         `http://localhost:3000/products/favourite/${sku}`,
         updatedProduct,
+      )
+
+      return response
+    } catch (error) {
+      throw rejectWithValue("Failed to get product")
+    }
+  },
+)
+
+export const updateProduct = createAsyncThunk(
+  "product/updateProduct",
+  async (formData: any, { rejectWithValue }) => {
+    try {
+      const product = await axios.get(
+        `http://localhost:3000/products/${formData.get("sku")}`,
+      )
+
+      const existingProduct = product.data
+
+      var updatedProduct
+
+      if (formData.get("images")) {
+        updatedProduct = formData
+      } else {
+        updatedProduct = {
+          ...existingProduct,
+          productName: formData.get("productName"),
+          quantity: formData.get("quantity"),
+          description: formData.get("description"),
+          defaultImage: formData.get("defaultImage"),
+        }
+      }
+
+      const response = await axios.put(
+        `http://localhost:3000/products/${formData.get("sku")}`,
+        updatedProduct,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
       )
 
       return response
@@ -134,6 +174,20 @@ export const productSlice = createSlice({
         )
       })
       .addCase(toggleFavouriteProduct.rejected, (state, action) => {
+        state.status = "failed"
+        state.error = action.payload
+      })
+      .addCase(updateProduct.pending, (state) => {
+        state.status = "loading"
+        state.error = null
+      })
+      .addCase(updateProduct.fulfilled, (state, action) => {
+        state.status = "idle"
+        state.products = state.products.filter(
+          (product) => product.sku !== action.payload,
+        )
+      })
+      .addCase(updateProduct.rejected, (state, action) => {
         state.status = "failed"
         state.error = action.payload
       })
