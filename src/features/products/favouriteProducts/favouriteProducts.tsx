@@ -137,7 +137,7 @@ export default function FavouriteProducts() {
                           sx={{ mr: "14px", cursor: "pointer" }}
                           src="/assets/delete-icon.svg"
                         />
-                        <Link to="edit">
+                        <Link to={"/edit?sku=" + product.sku}>
                           <Box
                             component="img"
                             sx={{ mr: "10px", cursor: "pointer" }}
