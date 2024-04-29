@@ -18,7 +18,9 @@ export const getAllProducts = createAsyncThunk(
   "product/getAllProducts",
   async () => {
     try {
-      const response = await axios.get("http://localhost:3000/products")
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}products`,
+      )
       return response.data
     } catch (error) {
       throw Error("Failed to fetch products")
@@ -30,7 +32,7 @@ export const deleteProduct = createAsyncThunk(
   "product/deleteProduct",
   async (sku: any, { rejectWithValue }) => {
     try {
-      await axios.delete(`http://localhost:3000/products/${sku}`)
+      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}products/${sku}`)
       return sku
     } catch (error) {
       throw rejectWithValue("Failed to delete product")
@@ -42,11 +44,15 @@ export const addProduct = createAsyncThunk(
   "product/addProduct",
   async (formData: any, { rejectWithValue }) => {
     try {
-      await axios.post("http://localhost:3000/products", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}products`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         },
-      })
+      )
     } catch (error) {
       console.error("Error uploading images:", error)
     }
@@ -57,7 +63,9 @@ export const toggleFavouriteProduct = createAsyncThunk(
   "product/toggleFavouriteProduct",
   async (sku: any, { rejectWithValue }) => {
     try {
-      const product = await axios.get(`http://localhost:3000/products/${sku}`)
+      const product = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}products/${sku}`,
+      )
 
       const existingProduct = product.data
 
@@ -67,7 +75,7 @@ export const toggleFavouriteProduct = createAsyncThunk(
       }
 
       const response = await axios.put(
-        `http://localhost:3000/products/favourite/${sku}`,
+        `${import.meta.env.VITE_BACKEND_URL}products/favourite/${sku}`,
         updatedProduct,
       )
 
@@ -83,7 +91,7 @@ export const updateProduct = createAsyncThunk(
   async (formData: any, { rejectWithValue }) => {
     try {
       const product = await axios.get(
-        `http://localhost:3000/products/${formData.get("sku")}`,
+        `${import.meta.env.VITE_BACKEND_URL}products/${formData.get("sku")}`,
       )
 
       const existingProduct = product.data
@@ -103,7 +111,7 @@ export const updateProduct = createAsyncThunk(
       }
 
       const response = await axios.put(
-        `http://localhost:3000/products/${formData.get("sku")}`,
+        `${import.meta.env.VITE_BACKEND_URL}products/${formData.get("sku")}`,
         updatedProduct,
         {
           headers: {
